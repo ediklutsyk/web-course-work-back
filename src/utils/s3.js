@@ -2,9 +2,12 @@ const configs = require('../configs')
 const AWS = require('aws-sdk');
 
 module.exports.generateSignedUrl = (req, res) => {
+    console.log('here', req.body)
     const s3 = new AWS.S3({
         accessKeyId: configs.awsKey,
-        secretAccessKey: configs.awsSecret
+        secretAccessKey: configs.awsSecret,
+        signatureVersion: 'v4',
+        region: 'eu-north-1'
     });
     const fileName = req.query['file-name'];
     const fileType = req.query['file-type'];
@@ -25,7 +28,7 @@ module.exports.generateSignedUrl = (req, res) => {
                 signedRequest: data,
                 url: `https://${configs.s3BucketName}.s3.amazonaws.com/${fileName}`
             };
-            return res.status(200).send(JSON.stringify(returnData));
+            return res.status(200).send(returnData);
         }
     });
 }

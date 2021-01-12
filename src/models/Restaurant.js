@@ -80,7 +80,7 @@ RestaurantSchema.methods.addComments = async function (name, text, rating) {
         rating: rating
     }
     restaurant.comments = restaurant.comments.concat(comment)
-    const sum = restaurant.comments.reduce((a, b) => a.rating + b.rating, 0)
+    const sum = restaurant.comments.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0)
     restaurant.rating = Math.round((sum / restaurant.comments.length) || 0);
     await restaurant.save()
     return comment

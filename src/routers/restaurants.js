@@ -34,7 +34,7 @@ router.post('/restaurant/photo/:id', auth.admin, async (req, res) => {
 router.get('/restaurants', async (req, res) => {
     try {
         const restaurants = await Restaurant.find()
-        res.status(200).send({restaurants: restaurants})
+        res.status(200).send(restaurants)
     } catch (error) {
         res.status(400).send(error)
     }
@@ -50,7 +50,7 @@ router.get('/restaurants/:id', async (req, res) => {
     }
 })
 
-router.post('/restaurants/comment/:id', async (req, res) => {
+router.post('/restaurants/comment/:id', auth.user, async (req, res) => {
     const restaurantId = req.params.id;
     try {
         const restaurant = await Restaurant.findById({_id: restaurantId})
@@ -84,7 +84,7 @@ router.post('/restaurants/filter', async (req, res) => {
         if (queryRating) {
             query.where('rating').equals(queryRating)
         }
-        if (queryKitchens) {
+        if (queryKitchens && queryKitchens.length) {
             query.where('kitchens').in(queryKitchens)
         }
         const restaurants = await query.exec();
@@ -98,18 +98,9 @@ router.post('/restaurants/filter', async (req, res) => {
         }
         res.status(200).send(restaurants)
     } catch (error) {
+        console.log(error)
         res.status(400).send(error)
     }
 })
 
 module.exports = router
-
-// "Американская",
-// "Грузинская",
-// "Европейская",
-// "Китайская",
-// "Океаническое меню",
-// "Рыба и морепродукты",
-// "Славянская",
-// "Украинская",
-// "Японская",
